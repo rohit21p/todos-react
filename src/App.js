@@ -13,10 +13,10 @@ import Bin from './components/bin';
 function App() {
   return (
     <Grid container>
-      <Grid item>
+      <Grid item xs={3} lg={2}>
         <Navbar />
       </Grid>
-      <Grid item>
+      <Grid item style={{flexGrow: 1}}>
         <Switch>
           <Route path='/login' component={Login} />
           <Route path='/settings' component={Settings} />
