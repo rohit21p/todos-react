@@ -10,6 +10,8 @@ import { Provider } from 'react-redux';
 import { persistStore, persistReducer } from 'redux-persist'
 import storage from 'redux-persist/lib/storage'
 import { PersistGate } from 'redux-persist/integration/react'
+import { ThemeProvider } from '@material-ui/core/styles'
+import theme from './lib/theme'
 
 const persistConfig = {
   key: 'todos',
@@ -25,7 +27,9 @@ ReactDOM.render(
     <Provider store={store}>
       <PersistGate loading={null} persistor={persistor}>
         <Router>
+          <ThemeProvider theme={theme}>
           <App />
+          </ThemeProvider>
         </Router>
       </PersistGate>
     </Provider>
