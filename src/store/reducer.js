@@ -5,6 +5,7 @@ const initialState = {
     username: null,
     pinned: [],
     rest: [],
+    archived: [],
     loggedIn: false,
     bin: []
 }
@@ -15,7 +16,8 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 pinned: action.payload.pinned,
-                rest: action.payload.rest
+                rest: action.payload.rest,
+                archived: action.payload.archived
             }
         case 'DELETE': 
             let data = [...state[action.payload.pinned ? 'pinned' : 'rest']]
@@ -24,6 +26,14 @@ export default function(state = initialState, action) {
                 ...state,
                 [action.payload.pinned ? 'pinned' : 'rest'] : data,
                 bin: [...state.bin, ...bin]
+            }
+        case 'ARCHIVE': 
+            let arr = [...state[action.payload.pinned ? 'pinned' : 'rest']]
+            let arc = arr.splice(action.payload.index, 1)
+            return {
+                ...state,
+                [action.payload.pinned ? 'pinned' : 'rest'] : arr,
+                archived: [...state.archived, ...arc]
             }
         case 'SAVE': 
             return {
@@ -37,6 +47,13 @@ export default function(state = initialState, action) {
             return {
                 ...state,
                 bin: new_bin
+            }
+        case 'RESTORE_ARCHIVED': 
+            let new_arc = [...state.archived]
+            new_arc.splice(action.payload.index, 1)
+            return {
+                ...state,
+                archived: new_arc
             }
         case 'PIN': 
             let pinned = [...state.pinned]
