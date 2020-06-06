@@ -7,6 +7,8 @@ import InputAdornment from '@material-ui/core/InputAdornment';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { connect } from 'react-redux';
+import DateFnsUtils from '@date-io/date-fns';
+import { DateTimePicker, MuiPickersUtilsProvider } from "@material-ui/pickers";
 
 
 function Alert(props) {
@@ -32,7 +34,6 @@ function AddNewTodo(props) {
         todo: {
             title: '',
             body: '',
-            due: '',
             label: '',
         },
         snackbar: {
@@ -41,6 +42,10 @@ function AddNewTodo(props) {
             color: 'success'
         }
     })
+
+    let tomorrow = new Date();
+    (tomorrow).setDate((tomorrow).getDate() + 1)
+    const [selectedDate, handleDateChange] = React.useState(tomorrow);
 
     const handleChange = (e, key, prop) => {
         let value = e.target.value;
@@ -54,15 +59,20 @@ function AddNewTodo(props) {
     }
     
     const saveTask = () => {
-        axios.post('http://localhost:8000/todos', state.todo, {
+        console.log(selectedDate, typeof selectedDate)
+        let todo = {
+            ...state.todo,
+            due: new Date(selectedDate)
+        }
+        axios.post('http://localhost:8000/todos', todo, {
             headers: {
                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
             }
         }).then(res => {
             console.log(res);
             props.save({
-                ...state.todo,
-                _id: res.data._id
+                ...todo,
+                _id: res.data._id,
             })
             setState(state => ({
                 ...state,
@@ -122,7 +132,21 @@ function AddNewTodo(props) {
                 <TextField variant="outlined" value={state.todo.title} label="Task Name" margin="normal" onChange={(e) => handleChange(e, 'todo', 'title')}/>
             </Grid>
             {state.todo.title.trim() ? <Grid item xs={12}>
+                <TextField variant="outlined" value={state.todo.label} label="Task Label" margin="normal" onChange={(e) => handleChange(e, 'todo', 'label')}/>
+            </Grid> : null}
+            {state.todo.title.trim() ? <Grid item xs={12}>
                 <TextField variant="outlined" value={state.todo.body} label="Description" multiline margin="normal" rows={4} onChange={(e) => handleChange(e, 'todo', 'body')}/>
+            </Grid> : null}
+            {state.todo.title.trim() ? <Grid item xs={12}>
+                <MuiPickersUtilsProvider utils={DateFnsUtils}>
+                    <DateTimePicker
+                        label="Due Date"
+                        inputVariant="outlined"
+                        value={selectedDate}
+                        onChange={handleDateChange}
+                        margin="normal"
+                    />
+                </MuiPickersUtilsProvider>
             </Grid> : null}
             {state.todo.title.trim() ? <Grid item xs={12}>
                 <Button variant="contained" onClick={saveTaskLocally}>
