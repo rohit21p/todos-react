@@ -216,58 +216,62 @@ function Todo(props) {
     }
 
     return (
-        <Paper elevation={5}>
-            <Grid container className={classes.todo}>
-                <Grid item xs={12} style={{marginBottom: '5%'}}>
-                    <span className={classes.title}>{props.task.title}</span>
-                    {props.task.label ? <span className={classes.label}>{props.task.label}</span> : null}
+        <Tooltip title={
+            props.archived ? "Status: Completed" : "Status: Incomplete"
+        } arrow placement="right">
+            <Paper elevation={5}>
+                <Grid container className={classes.todo}>
+                    <Grid item xs={12} style={{marginBottom: '5%'}}>
+                        <span className={classes.title}>{props.task.title}</span>
+                        {props.task.label ? <span className={classes.label}>{props.task.label}</span> : null}
+                    </Grid>
+                    {/* <Grid item xs={12} style={{marginBottom: '5%'}}>
+                        {props.task.label}
+                    </Grid> */}
+                    <Grid item xs={12} style={{marginBottom: '5%'}}>
+                        {props.task.body}
+                    </Grid>
+                    <Grid item xs={12} style={{marginBottom: '5%'}}>
+                        <i><span style={{fontFamily:'monospace'}}>Due on {props.task.due ? (new Date(props.task.due)).toString() : null}</span></i>
+                    </Grid>
+                    {!(props.bin || props.archived) ? <Grid item xs={12}>
+                        {props.pinned ? 
+                        <Tooltip title="Remove from favourites" arrow>
+                            <FavoriteIcon className={classes.option}  onClick={togglePin} fontSize="medium"/> 
+                        </Tooltip>:
+                        <Tooltip title="Add to favourites" arrow>
+                            <FavoriteBorderIcon className={classes.option} onClick={togglePin} fontSize="medium"/>
+                        </Tooltip>}
+                        <Tooltip title="Delete the task" arrow>
+                            <DeleteOutlineIcon className={classes.option} onClick={deletePin} fontSize="medium" />
+                        </Tooltip>
+                        <Tooltip title="Change Status to Completed" arrow>
+                            <CheckCircleOutlineIcon className={classes.option} onClick={archivePin} fontSize="medium" />
+                        </Tooltip>
+                        <Tooltip title="Add to google calendar" arrow>
+                            <a 
+                            href={"https://calendar.google.com/calendar/r/eventedit?" +
+                            "text=" + props.task.title +
+                            "&details" + props.task.body +
+                            "&location=todoapp&details&sf=true"}
+                            target="_blank">
+                                <EventIcon className={classes.option} fontSize="medium" />
+                            </a>
+                        </Tooltip>
+                    </Grid> : props.archived ? null :
+                    <Grid item xs={12}>
+                        <Tooltip title="Restore" arrow>
+                            <RestoreIcon className={classes.option} onClick={addPin} fontSize="medium" />
+                        </Tooltip>
+                    </Grid>}
                 </Grid>
-                {/* <Grid item xs={12} style={{marginBottom: '5%'}}>
-                    {props.task.label}
-                </Grid> */}
-                <Grid item xs={12} style={{marginBottom: '5%'}}>
-                    {props.task.due ? new Date(props.task.due).toString() : null}
-                </Grid>
-                <Grid item xs={12} style={{marginBottom: '5%'}}>
-                    {props.task.body}
-                </Grid>
-                {!(props.bin || props.archived) ? <Grid item xs={12}>
-                    {props.pinned ? 
-                    <Tooltip title="Remove from favorites" arrow>
-                        <FavoriteIcon className={classes.option} onClick={togglePin} fontSize="medium"/> 
-                    </Tooltip>:
-                    <Tooltip title="Mark as favorites" arrow>
-                        <FavoriteBorderIcon className={classes.option} onClick={togglePin} fontSize="medium"/>
-                    </Tooltip>}
-                    <Tooltip title="Delete the task" arrow>
-                        <DeleteOutlineIcon className={classes.option} onClick={deletePin} fontSize="medium" />
-                    </Tooltip>
-                    <Tooltip title="Change Status to Completed" arrow>
-                        <CheckCircleOutlineIcon className={classes.option} onClick={archivePin} fontSize="medium" />
-                    </Tooltip>
-                    <Tooltip title="Add to google calendar" arrow>
-                        <a 
-                        href={"https://calendar.google.com/calendar/r/eventedit?" +
-                        "text=" + props.task.title +
-                        "&details" + props.task.body +
-                        "&location=todoapp&details&sf=true"}
-                        target="_blank">
-                            <EventIcon className={classes.option} fontSize="medium" />
-                        </a>
-                    </Tooltip>
-                </Grid> : props.archived ? null :
-                <Grid item xs={12}>
-                    <Tooltip title="Restore" arrow>
-                        <RestoreIcon className={classes.option} onClick={addPin} fontSize="medium" />
-                    </Tooltip>
-                </Grid>}
-            </Grid>
-            <Snackbar open={state.snackbar.show} autoHideDuration={6000} onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')}>
-                <Alert onClose={() => handleChange({target: {value: false}}, 'title')} severity={state.snackbar.color}>
-                    {state.snackbar.msg}
-                </Alert>
-            </Snackbar>
-        </Paper>
+                <Snackbar open={state.snackbar.show} autoHideDuration={6000} onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')}>
+                    <Alert onClose={() => handleChange({target: {value: false}}, 'title')} severity={state.snackbar.color}>
+                        {state.snackbar.msg}
+                    </Alert>
+                </Snackbar>
+            </Paper>
+        </Tooltip>
     );
 }
 
