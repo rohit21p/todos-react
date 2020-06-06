@@ -4,11 +4,14 @@ import { Typography, Paper, makeStyles } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
+import CheckCircleOutlineIcon from '@material-ui/icons/CheckCircleOutline';
 import RestoreIcon from '@material-ui/icons/Restore';
 import axios from 'axios';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { connect } from 'react-redux';
+import Tooltip from '@material-ui/core/Tooltip';
+import EventIcon from '@material-ui/icons/Event';
 
 
 function Alert(props) {
@@ -24,6 +27,18 @@ const useStyles = makeStyles(theme => ({
     },
     option: {
         cursor: 'pointer',
+        color: 'black',
+        margin: '5px'
+    },
+    label: {
+        backgroundColor: 'lightblue',
+        padding: '5px',
+        margin: '15px',
+        borderRadius: '15%'
+    },
+    title: {
+        fontWeight: 'bold',
+        fontSize: '1.2rem'
     }
 }))
 
@@ -115,6 +130,49 @@ function Todo(props) {
         })
     }
 
+    const archivePin = () => {
+        let url = 'http://localhost:8000/archive'
+        console.log(url, props.pinned)
+        axios.post(url, {
+                _id: props.task._id
+            }, {
+            headers: {
+                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+            },
+        },).then(res => {
+            props.archive(props.pinned, props.index);
+            setState(state => ({
+                ...state,
+                snackbar: {
+                    show: true,
+                    msg: 'Task Archived',
+                    color: 'success'
+                }
+            }));
+        }).catch(err => {
+            console.log(err);
+            if (err.response && err.response.status === 403) {
+                setState(state => ({
+                    ...state,
+                    snackbar: {
+                        show: true,
+                        msg: 'Login To Use This Feature',
+                        color: 'error'
+                    }
+                }));
+            } else {
+                setState(state => ({
+                    ...state,
+                    snackbar: {
+                        show: true,
+                        msg: 'Some Error Occurred',
+                        color: 'error'
+                    }
+                }));
+            }
+        })
+    }
+
     const addPin = () => {
         let url = 'http://localhost:8000/todos'
         let body = {...props.task}
@@ -132,7 +190,7 @@ function Todo(props) {
                     color: 'success'
                 }
             }));
-            props.restore(props.task, props.index)
+            props.restore(props.index)
         }).catch(err => {
             console.log(err);
             if (err.response && err.response.status === 403) {
@@ -161,19 +219,47 @@ function Todo(props) {
         <Paper elevation={5}>
             <Grid container className={classes.todo}>
                 <Grid item xs={12} style={{marginBottom: '5%'}}>
-                    {props.task.title}
+                    <span className={classes.title}>{props.task.title}</span>
+                    {props.task.label ? <span className={classes.label}>{props.task.label}</span> : null}
+                </Grid>
+                {/* <Grid item xs={12} style={{marginBottom: '5%'}}>
+                    {props.task.label}
+                </Grid> */}
+                <Grid item xs={12} style={{marginBottom: '5%'}}>
+                    {props.task.due ? new Date(props.task.due).toString() : null}
                 </Grid>
                 <Grid item xs={12} style={{marginBottom: '5%'}}>
                     {props.task.body}
                 </Grid>
-                {!props.bin ? <Grid item xs={12}>
+                {!(props.bin || props.archived) ? <Grid item xs={12}>
                     {props.pinned ? 
-                    <FavoriteIcon className={classes.option} onClick={togglePin} fontSize="small"/> :
-                    <FavoriteBorderIcon className={classes.option} onClick={togglePin} fontSize="small"/>}
-                    <DeleteOutlineIcon className={classes.option} onClick={deletePin} fontSize="small" />
-                </Grid> : 
+                    <Tooltip title="Remove from favorites" arrow>
+                        <FavoriteIcon className={classes.option} onClick={togglePin} fontSize="medium"/> 
+                    </Tooltip>:
+                    <Tooltip title="Mark as favorites" arrow>
+                        <FavoriteBorderIcon className={classes.option} onClick={togglePin} fontSize="medium"/>
+                    </Tooltip>}
+                    <Tooltip title="Delete the task" arrow>
+                        <DeleteOutlineIcon className={classes.option} onClick={deletePin} fontSize="medium" />
+                    </Tooltip>
+                    <Tooltip title="Change Status to Completed" arrow>
+                        <CheckCircleOutlineIcon className={classes.option} onClick={archivePin} fontSize="medium" />
+                    </Tooltip>
+                    <Tooltip title="Add to google calendar" arrow>
+                        <a 
+                        href={"https://calendar.google.com/calendar/r/eventedit?" +
+                        "text=" + props.task.title +
+                        "&details" + props.task.body +
+                        "&location=todoapp&details&sf=true"}
+                        target="_blank">
+                            <EventIcon className={classes.option} fontSize="medium" />
+                        </a>
+                    </Tooltip>
+                </Grid> : props.archived ? null :
                 <Grid item xs={12}>
-                    <RestoreIcon className={classes.option} onClick={addPin} fontSize="small" />
+                    <Tooltip title="Restore" arrow>
+                        <RestoreIcon className={classes.option} onClick={addPin} fontSize="medium" />
+                    </Tooltip>
                 </Grid>}
             </Grid>
             <Snackbar open={state.snackbar.show} autoHideDuration={6000} onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')}>
@@ -192,7 +278,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     delete: (pinned, index) => dispatch({type: 'DELETE', payload: {pinned, index}}),
-    restore: (pinned, index) => dispatch({type: 'RESTORE', payload: {pinned, index}}),
+    archive: (pinned, index) => dispatch({type: 'ARCHIVE', payload: {pinned, index}}),
+    restore: (index) => dispatch({type: 'RESTORE', payload: {index}}),
+    restore_archived:  (index) => dispatch({type: 'RESTORE_ARCHIVED', payload: {index}}),
     pin: (task, index) => dispatch({type: 'PIN', payload: {task, index}}),
     unpin: (task, index) => dispatch({type: 'UNPIN', payload: {task, index}}),
 })
