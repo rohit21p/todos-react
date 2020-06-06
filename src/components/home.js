@@ -61,9 +61,11 @@ function Home(props) {
             }
         }).then(res => {
             console.log(res); 
-            let pinned = [], rest = [];
+            let pinned = [], rest = [], archived = [];
             for (let i = 0; i < res.data.data.length; i++) {
-                if (res.data.data[i].pinned) {
+                if (res.data.data[i].completed) {
+                    archived.push(res.data.data[i])
+                } else if (res.data.data[i].pinned) {
                     pinned.push(res.data.data[i]);
                 } else {
                     rest.push(res.data.data[i]);
@@ -71,7 +73,8 @@ function Home(props) {
             }
             props.push({
                 pinned,
-                rest
+                rest,
+                archived
             })
         }).catch(err => {
             console.log(err);
