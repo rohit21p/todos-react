@@ -30,6 +30,34 @@ export default function(state = initialState, action) {
                 ...state,
                 rest : [...state.rest, action.payload]
             }
+
+        case 'RESTORE': 
+            let new_bin = [...state.bin]
+            new_bin.splice(action.payload.index, 1)
+            return {
+                ...state,
+                bin: new_bin
+            }
+        case 'PIN': 
+            let pinned = [...state.pinned]
+            let others = [...state.rest]
+            others.splice(action.payload.index, 1)
+            pinned.push(action.payload.task)
+            return {
+                ...state,
+                pinned,
+                rest: others
+            }
+        case 'UNPIN': 
+            let unpinned = [...state.rest]
+            let fav = [...state.pinned]
+            fav.splice(action.payload.index, 1)
+            unpinned.push(action.payload.task)
+            return {
+                ...state,
+                pinned: fav,
+                rest: unpinned
+            }
         default:
             return state;
     }

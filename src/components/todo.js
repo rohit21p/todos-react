@@ -52,7 +52,6 @@ function Todo(props) {
 
     const togglePin = () => {
         let url = 'http://localhost:8000/' + (props.pinned ? 'unpin' : 'pin');
-        console.log(url, props.pinned)
         axios.post(url, {
             _id: props.task._id
         }, {
@@ -61,6 +60,12 @@ function Todo(props) {
             }
         }).then(res => {
             console.log(res)
+            let task = {...props.task, pinned: true}
+            if (props.pinned) {
+                props.unpin(task, props.index)
+            } else {
+                props.pin(task, props.index)
+            }
         }).catch(err => {
             console.log(err)
         })
@@ -119,7 +124,6 @@ function Todo(props) {
                 Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
             },
         }).then(res => {
-            props.delete(props.pinned, props.index);
             setState(state => ({
                 ...state,
                 snackbar: {
@@ -128,6 +132,7 @@ function Todo(props) {
                     color: 'success'
                 }
             }));
+            props.restore(props.task, props.index)
         }).catch(err => {
             console.log(err);
             if (err.response && err.response.status === 403) {
@@ -187,6 +192,9 @@ const mapStateToProps = (state) => ({
 
 const mapDispatchToProps = (dispatch) => ({
     delete: (pinned, index) => dispatch({type: 'DELETE', payload: {pinned, index}}),
+    restore: (pinned, index) => dispatch({type: 'RESTORE', payload: {pinned, index}}),
+    pin: (task, index) => dispatch({type: 'PIN', payload: {task, index}}),
+    unpin: (task, index) => dispatch({type: 'UNPIN', payload: {task, index}}),
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Todo);
