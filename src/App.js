@@ -12,12 +12,12 @@ import Bin from './components/bin';
 
 function App() {
   return (
-    <Grid container>
+    <Grid container style={{height: '100vh'}}>
       <Grid item xs={3} lg={2}>
         <Navbar />
       </Grid>
-      <Grid item style={{flexGrow: 1}}>
-        <Switch>
+      <Grid item xs={9} lg={10} style={{overflow: 'auto', height: '100%'}}>
+        <Switch>%
           <Route path='/login' component={Login} />
           <Route path='/settings' component={Settings} />
           <Route path='/archive' component={Archive} />

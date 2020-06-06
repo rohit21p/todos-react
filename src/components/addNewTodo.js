@@ -6,6 +6,7 @@ import axios from 'axios';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
+import { connect } from 'react-redux';
 
 
 function Alert(props) {
@@ -23,7 +24,7 @@ const useStyles = makeStyles(theme => ({
     }
 }))
 
-function AddNewTodo() {
+function AddNewTodo(props) {
 
     const classes = useStyles();
 
@@ -59,6 +60,10 @@ function AddNewTodo() {
             }
         }).then(res => {
             console.log(res);
+            props.save({
+                ...state.todo,
+                _id: res.data._id
+            })
             setState(state => ({
                 ...state,
                 snackbar: {
@@ -123,7 +128,7 @@ function AddNewTodo() {
                 <Button variant="contained" onClick={saveTaskLocally}>
                     Save Locally
                 </Button> 
-                <Button variant="contained" color="primary" onClick={saveTask}>
+                <Button variant="contained" color="primary" onClick={saveTask} disabled={props.loggedIn}>
                     Save
                 </Button>
             </Grid> : null}
@@ -136,4 +141,13 @@ function AddNewTodo() {
     );
 }
 
-export default AddNewTodo;
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn
+})
+
+
+const mapDispatchToProps = (dispatch) => ({
+    save: (task) => dispatch({type: 'SAVE', payload: task})
+})
+
+export default connect(mapStateToProps, mapDispatchToProps)(AddNewTodo);
