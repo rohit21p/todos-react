@@ -2,6 +2,7 @@ import React from 'react';
 import { makeStyles } from '@material-ui/core/styles';
 import AppBar from '@material-ui/core/AppBar';
 import Toolbar from '@material-ui/core/Toolbar';
+import AccountCircleIcon from '@material-ui/icons/AccountCircle';
 import Typography from '@material-ui/core/Typography';
 import IconButton from '@material-ui/core/IconButton';
 import MenuIcon from '@material-ui/icons/Menu';
@@ -107,14 +108,15 @@ function TopNavbar(props) {
             open={Boolean(anchorEl)}
             onClose={handleClose}
         >
+            <MenuItem onClick={handleClose}><AccountCircleIcon   fontSize="small" style={{margin: '10px'}}/>{props.username ? props.username.toUpperCase() : 'GUEST' }</MenuItem>
             {routes.map(route => 
             (<Link to={route.route} className={classes.route}>
                 <MenuItem onClick={handleClose}>{route.icon}{route.title}</MenuItem>
             </Link>)
             )}
-            {!props.loggedIn ? <MenuItem onClick={login}><VpnKeyIcon  style={{margin: '10px'}}/>Login</MenuItem> :
-            <MenuItem onClick={logout}><ExitToAppIcon  style={{margin: '10px'}}/>Logout</MenuItem>}
-            <MenuItem onClick={handleClose}><CopyrightIcon  style={{margin: '10px'}}/>Rohit Panjwani</MenuItem>
+            {!props.loggedIn ? <MenuItem onClick={login}><VpnKeyIcon  fontSize="small" style={{margin: '10px'}}/>Login</MenuItem> :
+            <MenuItem onClick={logout}><ExitToAppIcon  fontSize="small" style={{margin: '10px'}}/>Logout</MenuItem>}
+            <MenuItem onClick={handleClose}><CopyrightIcon  fontSize="small" style={{margin: '10px'}}/>Rohit Panjwani</MenuItem>
         </Menu>
           <Typography variant="h6" className={classes.title}>
             Rohit Panjwani
