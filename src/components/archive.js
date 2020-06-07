@@ -28,7 +28,16 @@ const useStyles = makeStyles(theme => ({
         display: 'grid',
         gridTemplateColumns: '23% 23% 23% 23%',
         columnGap: '2%',
-        rowGap: '15px'
+        rowGap: '15px',
+        [theme.breakpoints.down('md')]: {
+            gridTemplateColumns: '30% 30% 30%',
+        },
+        [theme.breakpoints.down('sm')]: {
+            gridTemplateColumns: '49% 49',
+        },
+        [theme.breakpoints.down('xs')]: {
+            gridTemplateColumns: '98%',
+        }
     }
 }))
 

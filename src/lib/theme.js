@@ -64,6 +64,12 @@ const theme = {
           fontSize: "0.8rem"
         }
       },
+      h6: {
+        fontSize: "1rem",
+        [breakpoints.down("xs")]: {
+          fontSize: "0.8rem"
+        }
+      },
       subtitle1: {
         fontSize: "0.8rem",
         [breakpoints.down("lg")]: {
