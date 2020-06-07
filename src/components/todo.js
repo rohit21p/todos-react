@@ -66,7 +66,7 @@ function Todo(props) {
     }
 
     const togglePin = () => {
-        let url = 'http://localhost:8000/' + (props.pinned ? 'unpin' : 'pin');
+        let url = 'https://126b4yhy70.execute-api.ap-south-1.amazonaws.com/production/' + (props.pinned ? 'unpin' : 'pin');
         axios.post(url, {
             _id: props.task._id
         }, {
@@ -106,7 +106,7 @@ function Todo(props) {
     }
 
     const deletePin = () => {
-        let url = 'http://localhost:8000/todo'
+        let url = 'https://126b4yhy70.execute-api.ap-south-1.amazonaws.com/production/todo'
         console.log(url, props.pinned)
         axios.delete(url, {
             headers: {
@@ -151,7 +151,7 @@ function Todo(props) {
     }
 
     const archivePin = () => {
-        let url = 'http://localhost:8000/archive'
+        let url = 'https://126b4yhy70.execute-api.ap-south-1.amazonaws.com/production/archive'
         console.log(url, props.pinned)
         axios.post(url, {
                 _id: props.task._id
@@ -195,7 +195,7 @@ function Todo(props) {
     }
 
     const addPin = () => {
-        let url = 'http://localhost:8000/todos'
+        let url = 'https://126b4yhy70.execute-api.ap-south-1.amazonaws.com/production/todos'
         let body = {...props.task}
         delete body._id;
         axios.post(url, body, {

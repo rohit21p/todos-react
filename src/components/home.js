@@ -64,7 +64,7 @@ function Home(props) {
     }
 
     React.useEffect(() => {
-        axios.get('http://localhost:8000/todos', {
+        axios.get('https://126b4yhy70.execute-api.ap-south-1.amazonaws.com/production/todos', {
             headers: {
                 Authorization: 'Bearer ' + props.token 
             }

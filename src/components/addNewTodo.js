@@ -63,7 +63,7 @@ function AddNewTodo(props) {
             ...state.todo,
             due: new Date(selectedDate)
         }
-        axios.post('http://localhost:8000/todos', todo, {
+        axios.post('https://126b4yhy70.execute-api.ap-south-1.amazonaws.com/production//todos', todo, {
             headers: {
                 Authorization: 'Bearer ' + props.token 
             }
