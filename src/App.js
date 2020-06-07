@@ -6,7 +6,6 @@ import './App.css';
 
 import Navbar from './components/navbar';
 import TopNavbar from './components/topnavbar';
-import Login from './components/login';
 import Home from './components/home';
 import Settings from './components/settings';
 import Archive from './components/archive';
@@ -44,8 +43,7 @@ function App() {
       <TopNavbar/>
       </Grid>
       <Grid item xs={9} lg={10} style={{overflow: 'auto', height: '100%'}}>
-        <Switch>%
-          {/* <Route path='/login' component={Login} /> */}
+        <Switch>
           <Route path='/settings' component={Settings} />
           <Route path='/archive' component={Archive} />
           <Route path='/bin' component={Bin} />

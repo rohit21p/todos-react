@@ -1,6 +1,5 @@
 import React from 'react';
 import { connect } from 'react-redux';
-import actions from '../store/actions'
 import Grid from '@material-ui/core/Grid'; 
 import { useHistory } from 'react-router-dom'
 import Button from '@material-ui/core/Button';

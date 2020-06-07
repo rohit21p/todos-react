@@ -1,6 +1,6 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid'
-import { Typography, Paper, makeStyles } from '@material-ui/core';
+import { Paper, makeStyles } from '@material-ui/core';
 import FavoriteBorderIcon from '@material-ui/icons/FavoriteBorder';
 import FavoriteIcon from '@material-ui/icons/Favorite';
 import DeleteOutlineIcon from '@material-ui/icons/DeleteOutline';
@@ -276,7 +276,8 @@ function Todo(props) {
                             "text=" + props.task.title +
                             "&details" + props.task.body +
                             "&location=todoapp&details&sf=true"}
-                            target="_blank">
+                            target="_blank"
+                            rel="noopener noreferrer">
                                 <EventIcon className={classes.option} fontSize="medium" />
                             </a>
                         </Tooltip>

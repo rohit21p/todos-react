@@ -3,7 +3,6 @@ import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
 import { Typography, TextField, Button, Tooltip } from '@material-ui/core';
 import axios from 'axios';
-import InputAdornment from '@material-ui/core/InputAdornment';
 import Snackbar from '@material-ui/core/Snackbar';
 import MuiAlert from '@material-ui/lab/Alert';
 import { connect } from 'react-redux';
@@ -111,17 +110,6 @@ function AddNewTodo(props) {
                 }));
             }
         })
-    }
-
-    const saveTaskLocally = () => {
-        setState(state => ({
-            ...state,
-            snackbar: {
-                show: true,
-                msg: 'Future Feature',
-                color: 'info'
-            }
-        }));
     }
 
     return (

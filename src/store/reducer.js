@@ -1,5 +1,3 @@
-import actions from './actions'
-
 const initialState = {
     token: null,
     username: "Guest",

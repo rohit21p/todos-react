@@ -109,7 +109,7 @@ function Home(props) {
                 }));
             }
         })
-    }, [])
+    }, [props])
 
     return (
         <Grid container className={classes.root}>
