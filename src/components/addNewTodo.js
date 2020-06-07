@@ -1,7 +1,7 @@
 import React from 'react';
 import Grid from '@material-ui/core/Grid';
 import { makeStyles } from '@material-ui/core/styles';
-import { Typography, TextField, Button } from '@material-ui/core';
+import { Typography, TextField, Button, Tooltip } from '@material-ui/core';
 import axios from 'axios';
 import InputAdornment from '@material-ui/core/InputAdornment';
 import Snackbar from '@material-ui/core/Snackbar';
@@ -66,7 +66,7 @@ function AddNewTodo(props) {
         }
         axios.post('http://localhost:8000/todos', todo, {
             headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+                Authorization: 'Bearer ' + props.token 
             }
         }).then(res => {
             console.log(res);
@@ -91,6 +91,7 @@ function AddNewTodo(props) {
         }).catch(err => {
             console.log(err);
             if (err.response && err.response.status === 403) {
+                props.logout();
                 setState(state => ({
                     ...state,
                     snackbar: {
@@ -149,12 +150,11 @@ function AddNewTodo(props) {
                 </MuiPickersUtilsProvider>
             </Grid> : null}
             {state.todo.title.trim() ? <Grid item xs={12}>
-                <Button variant="contained" onClick={saveTaskLocally}>
-                    Save Locally
-                </Button> 
-                <Button variant="contained" color="primary" onClick={saveTask} disabled={props.loggedIn}>
-                    Save
-                </Button>
+                <Tooltip title={props.loggedIn ? "Save" : "Login to use this feature"}>
+                    <Button variant="contained" color="primary" onClick={saveTask} disabled={!props.loggedIn}>
+                        Save
+                    </Button>
+                </Tooltip>
             </Grid> : null}
             <Snackbar open={state.snackbar.show} autoHideDuration={6000} onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')}>
                 <Alert onClose={() => handleChange({target: {value: false}}, 'title')} severity={state.snackbar.color}>
@@ -166,12 +166,14 @@ function AddNewTodo(props) {
 }
 
 const mapStateToProps = (state) => ({
-    loggedIn: state.loggedIn
+    loggedIn: state.loggedIn,
+    token: state.token
 })
 
 
 const mapDispatchToProps = (dispatch) => ({
-    save: (task) => dispatch({type: 'SAVE', payload: task})
+    save: (task) => dispatch({type: 'SAVE', payload: task}),
+    logout: () => dispatch({type: 'LOGOUT'})
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(AddNewTodo);

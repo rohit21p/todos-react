@@ -2,7 +2,7 @@ import actions from './actions'
 
 const initialState = {
     token: null,
-    username: null,
+    username: "Guest",
     pinned: [],
     rest: [],
     archived: [],
@@ -75,6 +75,15 @@ export default function(state = initialState, action) {
                 pinned: fav,
                 rest: unpinned
             }
+        case 'LOGIN': 
+            return {
+                ...state,
+                loggedIn: true,
+                token: action.payload.token,
+                username: action.payload.username
+            }
+        case 'LOGOUT': 
+            return initialState;
         default:
             return state;
     }

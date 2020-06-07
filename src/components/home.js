@@ -57,7 +57,7 @@ function Home(props) {
     React.useEffect(() => {
         axios.get('http://localhost:8000/todos', {
             headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+                Authorization: 'Bearer ' + props.token 
             }
         }).then(res => {
             console.log(res); 
@@ -80,11 +80,12 @@ function Home(props) {
             console.log(err);
             if(err.response && err.response.status === 403) {
                 //not logged int
+                props.logout();
                 setState(state => ({
                     ...state,
                     snackbar: {
                         show: true,
-                        msg: 'Login to see tasks saved on server',
+                        msg: 'Login to see tasks saved',
                         color: 'info'
                     }
                 }));
@@ -135,8 +136,8 @@ function Home(props) {
                     </Grid>
                 </Grid>
             </Grid>
-            <Snackbar open={state.snackbar.show} autoHideDuration={6000} onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')}>
-                <Alert onClose={() => handleChange({target: {value: false}}, 'title')} severity={state.snackbar.color}>
+            <Snackbar open={state.snackbar.show} onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')}>
+                <Alert onClose={() => handleChange({target: {value: false}}, 'snackbar', 'show')} severity={state.snackbar.color}>
                     {state.snackbar.msg}
                 </Alert>
             </Snackbar>
@@ -147,10 +148,12 @@ function Home(props) {
 const mapStateToProps = (state) => ({
     pinned: state.pinned,
     rest: state.rest,
+    token: state.token
 })
 
 const mapDispatchToProps = (dispatch) => ({
-    push: (tasks) => dispatch({type: 'PUSH', payload: tasks})
+    push: (tasks) => dispatch({type: 'PUSH', payload: tasks}),
+    logout: () => dispatch({type: 'LOGOUT'})
 })
 
 

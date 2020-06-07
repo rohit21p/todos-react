@@ -71,7 +71,7 @@ function Todo(props) {
             _id: props.task._id
         }, {
             headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+                Authorization: 'Bearer ' + props.token 
             }
         }).then(res => {
             console.log(res)
@@ -82,7 +82,26 @@ function Todo(props) {
                 props.pin(task, props.index)
             }
         }).catch(err => {
-            console.log(err)
+            if (err.response && err.response.status === 403) {
+                props.logout();
+                setState(state => ({
+                    ...state,
+                    snackbar: {
+                        show: true,
+                        msg: 'Login To Use This Feature',
+                        color: 'error'
+                    }
+                }));
+            } else {
+                setState(state => ({
+                    ...state,
+                    snackbar: {
+                        show: true,
+                        msg: 'Some Error Occurred',
+                        color: 'error'
+                    }
+                }));
+            }
         })
     }
 
@@ -91,7 +110,7 @@ function Todo(props) {
         console.log(url, props.pinned)
         axios.delete(url, {
             headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+                Authorization: 'Bearer ' + props.token 
             },
             data: {
                 _id: props.task._id
@@ -109,6 +128,7 @@ function Todo(props) {
         }).catch(err => {
             console.log(err);
             if (err.response && err.response.status === 403) {
+                props.logout();
                 setState(state => ({
                     ...state,
                     snackbar: {
@@ -137,7 +157,7 @@ function Todo(props) {
                 _id: props.task._id
             }, {
             headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+                Authorization: 'Bearer ' + props.token 
             },
         },).then(res => {
             props.archive(props.pinned, props.index);
@@ -152,6 +172,7 @@ function Todo(props) {
         }).catch(err => {
             console.log(err);
             if (err.response && err.response.status === 403) {
+                props.logout();
                 setState(state => ({
                     ...state,
                     snackbar: {
@@ -179,7 +200,7 @@ function Todo(props) {
         delete body._id;
         axios.post(url, body, {
             headers: {
-                Authorization: 'Bearer eyJhbGciOiJIUzI1NiIsInR5cCI6IkpXVCJ9.eyJ1c2VybmFtZSI6ImFkbWluIiwiaWF0IjoxNTkwODU0ODg1fQ.BvNx3lWVZwn50vj1go5Io81dGip3p-REkHyIU5zVvbc' 
+                Authorization: 'Bearer ' + props.token 
             },
         }).then(res => {
             setState(state => ({
@@ -194,6 +215,7 @@ function Todo(props) {
         }).catch(err => {
             console.log(err);
             if (err.response && err.response.status === 403) {
+                props.logout();
                 setState(state => ({
                     ...state,
                     snackbar: {
@@ -277,6 +299,7 @@ function Todo(props) {
 
 
 const mapStateToProps = (state) => ({
+    token: state.token
 })
 
 
@@ -287,6 +310,7 @@ const mapDispatchToProps = (dispatch) => ({
     restore_archived:  (index) => dispatch({type: 'RESTORE_ARCHIVED', payload: {index}}),
     pin: (task, index) => dispatch({type: 'PIN', payload: {task, index}}),
     unpin: (task, index) => dispatch({type: 'UNPIN', payload: {task, index}}),
+    logout: () => dispatch({type: 'LOGOUT'})
 })
 
 export default connect(mapStateToProps, mapDispatchToProps)(Todo);

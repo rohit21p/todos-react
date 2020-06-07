@@ -14,9 +14,17 @@ import List from '@material-ui/core/List';
 import Divider from '@material-ui/core/Divider';
 import ListItem from '@material-ui/core/ListItem';
 import ListItemIcon from '@material-ui/core/ListItemIcon';
+import { connect } from 'react-redux';
 import ListItemText from '@material-ui/core/ListItemText';
 import InboxIcon from '@material-ui/icons/MoveToInbox';
 import MailIcon from '@material-ui/icons/Mail';
+import Dialog from '@material-ui/core/Dialog';
+import DialogActions from '@material-ui/core/DialogActions';
+import DialogContent from '@material-ui/core/DialogContent';
+import DialogContentText from '@material-ui/core/DialogContentText';
+import DialogTitle from '@material-ui/core/DialogTitle';
+import Login from './login'
+import ExitToAppIcon from '@material-ui/icons/ExitToApp';
 
 const useStyles = makeStyles(theme => ({
     root: {
@@ -36,11 +44,6 @@ const routes = [
         icon: <HomeIcon />
     },
     {
-        title: 'Login',
-        route: '/login',
-        icon: <VpnKeyIcon />
-    },
-    {
         title: 'Archive',
         route: '/archive',
         icon: <ArchiveIcon />
@@ -57,16 +60,26 @@ const routes = [
     },
 ]
 
-function Navbar() {
+function Navbar(props) {
 
     const classes = useStyles();
+
+    const [open, setOpen] = React.useState(false);
+
+    const handleClickOpen = () => {
+        setOpen(true);
+    };
+
+    const handleClose = () => {
+        setOpen(false);
+    };
 
     return (
         <Paper elevation={3} className={classes.root}>
             <List>
                 <ListItem button>
                     <ListItemIcon><AccountCircleIcon /></ListItemIcon>
-                    <ListItemText primary="Guest Account" />
+                    <ListItemText primary={props.username ? props.username.toUpperCase() : 'GUEST' } />
                 </ListItem>
             </List>
             <Divider />
@@ -81,6 +94,19 @@ function Navbar() {
                 ))}
             </List>
             <Divider />
+            {!props.loggedIn ? <List>
+                <ListItem button onClick={handleClickOpen}>
+                    <ListItemIcon><VpnKeyIcon /></ListItemIcon>
+                    <ListItemText primary="Login" />
+                </ListItem>
+            </List> :
+            <List>
+                <ListItem button onClick={props.logout}>
+                    <ListItemIcon><ExitToAppIcon /></ListItemIcon>
+                    <ListItemText primary="Logout" />
+                </ListItem>
+            </List>}
+            <Divider />
             <List>
                 {['Rohit Panjwani'].map((text, index) => (
                 <ListItem button key={text}>
@@ -89,8 +115,29 @@ function Navbar() {
                 </ListItem>
                 ))}
             </List>
+            <Dialog
+                open={open}
+                onClose={handleClose}
+                aria-labelledby="alert-dialog-title"
+                aria-describedby="alert-dialog-description"
+                maxWidth={"md"}
+            >
+            <DialogContent>
+                <Login close={handleClose}/>
+            </DialogContent>
+            </Dialog>
         </Paper>
     );
 }
 
-export default Navbar;
+const mapStateToProps = (state) => ({
+    loggedIn: state.loggedIn,
+    username: state.username
+})
+
+const mapDispatchToProps = (dispatch) => ({
+    logout: () => dispatch({type: 'LOGOUT'})
+})
+
+
+export default connect(mapStateToProps, mapDispatchToProps)(Navbar);

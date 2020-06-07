@@ -18,7 +18,7 @@ function App() {
       </Grid>
       <Grid item xs={9} lg={10} style={{overflow: 'auto', height: '100%'}}>
         <Switch>%
-          <Route path='/login' component={Login} />
+          {/* <Route path='/login' component={Login} /> */}
           <Route path='/settings' component={Settings} />
           <Route path='/archive' component={Archive} />
           <Route path='/bin' component={Bin} />
